@@ -5,8 +5,8 @@ import (
 	"sync/atomic"
 )
 
-// LFStack implements a lock-free, LIFO stack of items. Its zero-value can be
-// used as-is.
+// LFStack implements a concurrency-safe, lock-free LIFO stack similar to
+// skeeto's C11 version.
 type LFStack[T any] struct {
 	initOnce   sync.Once
 	free, head atomic.Pointer[lfhead[T]]

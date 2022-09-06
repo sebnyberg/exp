@@ -6,13 +6,7 @@ import (
 
 // LFStack implements a lock-free, LIFO stack of items. Its zero-value can be
 // used as-is.
-//
-// This is not the most performant kind of lock-free stack in Go, but it does
-// not require the caller to hold onto a reference of the object while it stays
-// within the stack. For an example of the performant version, see the Go
-// runtime package's lfstack.
 type LFStack[T any] struct {
-	// head points to the front-most node, or nil if no node exists.
 	head atomic.Pointer[lfnode[T]]
 	size atomic.Uint64
 }

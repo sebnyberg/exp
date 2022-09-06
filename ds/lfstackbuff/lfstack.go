@@ -5,6 +5,9 @@ import (
 	"sync/atomic"
 )
 
+// LFStack implements a concurrency-safe, lock-free LIFO stack with buffered
+// node allocation. It contains what is essentially a memory leak - elements
+// allocated in the stack are held onto for the lifetime of the stack.
 type LFStack[T any] struct {
 	head atomic.Pointer[LFNode[T]]
 
