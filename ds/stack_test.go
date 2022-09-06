@@ -9,6 +9,9 @@ import (
 	"testing"
 
 	"github.com/sebnyberg/exp/ds"
+	"github.com/sebnyberg/exp/ds/lfstack"
+	"github.com/sebnyberg/exp/ds/lfstack_skeeto"
+	"github.com/sebnyberg/exp/ds/lfstackbuff"
 )
 
 var v int
@@ -26,7 +29,14 @@ type stackDef[T any] struct {
 func getStackDefs[T any]() []stackDef[T] {
 	defs := []stackDef[T]{
 		{"LFStack", func() Stacker[T] {
-			return new(ds.LFStack[T])
+			return new(lfstack.LFStack[T])
+		}},
+		{"LFStackGC2", func() Stacker[T] {
+			var stack lfstackbuff.LFStack[T]
+			return &stack
+		}},
+		{"LFStack2", func() Stacker[T] {
+			return new(lfstack_skeeto.LFStack[T])
 		}},
 		{"SyncStack", func() Stacker[T] {
 			return new(ds.SyncStack[T])
@@ -112,8 +122,8 @@ func TestStack(t *testing.T) {
 }
 
 func BenchmarkStackConcurrent(b *testing.B) {
-	for _, sz := range []int{100, 1000, 10000, 100000} {
-		m := runtime.NumCPU()
+	for _, sz := range []int{1000, 10000, 100000} {
+		m := runtime.NumCPU() * 10
 
 		// Pre-determine random actions that the goroutines will take
 		actions := make([][]byte, m)
